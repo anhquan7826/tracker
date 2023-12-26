@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Tracker Client</string>
+    <string name="grant_location_permission">Cấp quyền vị trí.</string>
+    <string name="grant_permission">Cấp quyền</string>
+    <string name="location_permission_denied">Quyền truy cập vị trí bị từ chối!</string>
+    <string name="login">Đăng nhập</string>
+    <string name="sign_up">Đăng ký</string>
+    <string name="incorrect_credential">Tài khoản không đúng!</string>
+    <string name="invalid_email">Email không hợp lệ!</string>
+    <string name="invalid_password">Mật khẩu phải có 6 ký tự trở lên!</string>
+    <string name="password_not_match">Mật khẩu không trùng khớp!</string>
+    <string name="something_happened">Có lỗi xảy ra!</string>
+    <string name="email_exist">Tài khoản đã tồn tại!</string>
+</resources>
