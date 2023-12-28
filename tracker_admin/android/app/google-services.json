@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "207005882316",
+    "firebase_url": "https://tracker-684d5-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tracker-684d5",
+    "storage_bucket": "tracker-684d5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207005882316:android:5e1fb3b09d06250eccef69",
+        "android_client_info": {
+          "package_name": "com.anhquan.tracker_admin"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2uWzDuXBLvg02_rHi3helisoYdZqFOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:207005882316:android:e2d57170d5c9e517ccef69",
+        "android_client_info": {
+          "package_name": "com.anhquan.tracker_client"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAh2uWzDuXBLvg02_rHi3helisoYdZqFOc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

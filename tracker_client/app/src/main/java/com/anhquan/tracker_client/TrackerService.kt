@@ -23,6 +23,8 @@ import com.google.android.gms.location.Priority
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
+import com.google.firebase.messaging.RemoteMessage
 
 class TrackerService : Service() {
     private lateinit var notificationManager: NotificationManager
@@ -33,7 +35,20 @@ class TrackerService : Service() {
     private val uid = Firebase.auth.currentUser!!.uid
     private lateinit var deviceId: String
 
-    private val minTimeInterval = 30 * 1000L
+    private val minTimeInterval = 10 * 1000L
+
+    private var initiated = false
+
+    private val locationCallback = object : LocationCallback() {
+        override fun onLocationResult(result: LocationResult) {
+            result.lastLocation?.let {
+                try {
+                    if (initiated) onLocationUpdate(it.latitude, it.longitude)
+                } catch (_: Exception) {
+                }
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -42,8 +57,6 @@ class TrackerService : Service() {
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
         NotificationUtil.configure(this)
         startForeground(1, NotificationUtil.getPersistentNotification(applicationContext))
-        deviceId = getSharedPreferences("tracker-client", Context.MODE_PRIVATE).getString("id", "")
-            .toString()
         initField()
         trackLocation()
     }
@@ -53,7 +66,17 @@ class TrackerService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
 
     private fun initField() {
-        database.child(uid).child(deviceId).child("name").setValue(Build.MODEL)
+        database.child("$uid/email").setValue(Firebase.auth.currentUser!!.email!!)
+        val sp = getSharedPreferences("tracker-client", Context.MODE_PRIVATE)
+        if (sp.contains("id")) {
+            deviceId = sp.getString("id", "").toString()
+        } else {
+            val ref = database.child("$uid/devices").push()
+            deviceId = ref.key!!
+            sp.edit().putString("id", deviceId).apply()
+        }
+        database.child("$uid/devices/$deviceId/name").setValue(Build.MODEL)
+        initiated = true
     }
 
     private fun trackLocation() {
@@ -67,39 +90,34 @@ class TrackerService : Service() {
         ) return
         fusedLocationProviderClient.requestLocationUpdates(
             LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, minTimeInterval).build(),
-            object : LocationCallback() {
-                override fun onLocationResult(result: LocationResult) {
-                    result.lastLocation?.let {
-                        try {
-                            onLocationUpdate(it.latitude, it.longitude)
-                        } catch (_: Exception) {
-                        }
-                    }
-                }
-            },
+            locationCallback,
             Looper.getMainLooper()
         )
     }
 
     fun onLocationUpdate(latitude: Double, longitude: Double) {
         val time = now()
-        database
-            .child(uid)
-            .child(deviceId)
-            .child("history").get().addOnSuccessListener {
-                val index = it.childrenCount
-                database
-                    .child(uid)
-                    .child(deviceId)
-                    .child("history")
-                    .child(index.toString())
-                    .setValue(
-                        History(
-                            time = time,
-                            lat = latitude,
-                            lon = longitude
-                        )
-                    )
-            }
+        database.child("$uid/devices/$deviceId/history").get().addOnSuccessListener {
+            it.ref.child(it.childrenCount.toString()).setValue(
+                History(
+                    time = time,
+                    lat = latitude,
+                    lon = longitude
+                )
+            )
+        }
+//        database.child("admin").get().addOnSuccessListener {
+//            val adminToken = it.value.toString()
+//            FirebaseMessaging.getInstance().send(
+//                RemoteMessage
+//                    .Builder(adminToken)
+//                    .build()
+//            )
+//        }
+    }
+
+    override fun onDestroy() {
+        fusedLocationProviderClient.removeLocationUpdates(locationCallback)
+        super.onDestroy()
     }
 }
