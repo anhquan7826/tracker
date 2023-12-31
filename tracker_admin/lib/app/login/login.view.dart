@@ -24,7 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Đăng nhập'),
+        title: const Text('Tracker Admin'),
       ),
       body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
@@ -36,44 +36,65 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         builder: (context, state) {
-          return Column(
-            children: [
-              TextField(
-                controller: emailController,
-                decoration: const InputDecoration(label: Text('Email'), hintText: 'Nhập email'),
-                keyboardType: TextInputType.emailAddress,
-                textInputAction: TextInputAction.next,
-                inputFormatters: [FilteringTextInputFormatter(RegExp(r'\s'), allow: false)],
-                onChanged: (value) => setState(() {}),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: const InputDecoration(label: Text('Mật khẩu'), hintText: 'Nhập mật khẩu'),
-                keyboardType: TextInputType.visiblePassword,
-                textInputAction: TextInputAction.done,
-                obscureText: true,
-                onChanged: (value) => setState(() {}),
-              ),
-              if (state is LoggingInState)
-                FilledButton.icon(
-                  onPressed: null,
-                  icon: const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(),
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text(
+                    'Đăng nhập',
+                    style: TextStyle(
+                      fontSize: 24,
+                    ),
                   ),
-                  label: const Text('Đang đăng nhập'),
-                )
-              else
-                FilledButton(
-                  onPressed: cubit.validate(emailController.text.trim(), passwordController.text)
-                      ? () {
-                          cubit.login(emailController.text.trim(), passwordController.text);
-                        }
-                      : null,
-                  child: const Text('Đăng nhập'),
-                ),
-            ],
+                  Padding(
+                    padding: const EdgeInsets.only(top: 32),
+                    child: TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(label: Text('Email'), hintText: 'Nhập email'),
+                      keyboardType: TextInputType.emailAddress,
+                      textInputAction: TextInputAction.next,
+                      inputFormatters: [FilteringTextInputFormatter(RegExp(r'\s'), allow: false)],
+                      onChanged: (value) => setState(() {}),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      top: 16,
+                      bottom: 32,
+                    ),
+                    child: TextField(
+                      controller: passwordController,
+                      decoration: const InputDecoration(label: Text('Mật khẩu'), hintText: 'Nhập mật khẩu'),
+                      keyboardType: TextInputType.visiblePassword,
+                      textInputAction: TextInputAction.done,
+                      obscureText: true,
+                      onChanged: (value) => setState(() {}),
+                    ),
+                  ),
+                  if (state is LoggingInState)
+                    FilledButton.icon(
+                      onPressed: null,
+                      icon: const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(),
+                      ),
+                      label: const Text('Đang đăng nhập'),
+                    )
+                  else
+                    FilledButton(
+                      onPressed: cubit.validate(emailController.text.trim(), passwordController.text)
+                          ? () {
+                              cubit.login(emailController.text.trim(), passwordController.text);
+                            }
+                          : null,
+                      child: const Text('Đăng nhập'),
+                    ),
+                ],
+              ),
+            ),
           );
         },
       ),

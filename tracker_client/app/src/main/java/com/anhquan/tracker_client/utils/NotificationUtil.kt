@@ -38,6 +38,8 @@ object NotificationUtil {
             persistentNotification = buildNotification(
                 context,
                 CHANNEL_ID_PERSISTENCE,
+                title = "Dịch vụ Tracker Client",
+                content = "Tracker Admin đang hoạt động dưới nền để thu thập vị trí.",
                 ongoing = true,
                 requestCode = 0,
                 intentExtras = Bundle().apply {

@@ -45,6 +45,8 @@ object NotificationUtil {
             persistentNotification = buildNotification(
                 context,
                 CHANNEL_ID_PERSISTENCE,
+                title = "Dịch vụ Tracker Admin",
+                content = "Tracker Admin đang hoạt động dưới nền để đẩy thông báo.",
                 ongoing = true,
                 requestCode = 0,
                 intentExtras = Bundle().apply {

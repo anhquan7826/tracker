@@ -92,9 +92,6 @@ class _DeviceScreenState extends State<DeviceScreen> {
     return Padding(
       padding: const EdgeInsets.only(top: 8),
       child: ListTile(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
         leading: Icon(
           Icons.phone_android_outlined,
           weight: 200,

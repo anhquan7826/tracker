@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Tracker Client</string>
-    <string name="grant_location_permission">Cấp quyền vị trí.</string>
+    <string name="grant_location_permission">Vui lòng cấp quyền vị trí để tiếp tục.</string>
     <string name="grant_permission">Cấp quyền</string>
     <string name="location_permission_denied">Quyền truy cập vị trí bị từ chối!</string>
     <string name="login">Đăng nhập</string>

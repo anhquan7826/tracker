@@ -7,6 +7,7 @@ import 'package:tracker_admin/app/history/history.cubit.dart';
 import 'package:tracker_admin/app/history/history.state.dart';
 import 'package:tracker_admin/model/device.model.dart';
 import 'package:tracker_admin/model/history.model.dart';
+import 'package:tracker_admin/utils/intent.util.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key, required this.device});
@@ -93,19 +94,18 @@ class _HistoryScreenState extends State<HistoryScreen> {
   Widget buildHistoryList() {
     return ListView(
       padding: const EdgeInsets.all(16),
-      children: histories.map((history) {
+      children: histories.reversed.map((history) {
+        final time = DateFormat('dd/MM/yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(history.time * 1000));
         return Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: ListTile(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            leading: const Icon(Icons.history),
             title: Text(
-              DateFormat('dd/MM/yyyy HH:mm').format(DateTime.fromMillisecondsSinceEpoch(history.time * 1000)),
+              time,
             ),
             subtitle: Text('${history.lat}, ${history.lon}'),
             onTap: () {
-              // TODO: show map
+              IntentUtil.openMap(time, lat: history.lat, lon: history.lon);
             },
             onLongPress: () {
               Clipboard.setData(ClipboardData(text: '${history.lat}, ${history.lon}')).whenComplete(() {

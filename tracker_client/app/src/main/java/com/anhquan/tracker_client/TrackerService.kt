@@ -23,8 +23,6 @@ import com.google.android.gms.location.Priority
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.messaging.RemoteMessage
 
 class TrackerService : Service() {
     private lateinit var notificationManager: NotificationManager
@@ -35,7 +33,7 @@ class TrackerService : Service() {
     private val uid = Firebase.auth.currentUser!!.uid
     private lateinit var deviceId: String
 
-    private val minTimeInterval = 10 * 1000L
+    private val minTimeInterval = 300 * 1000L
 
     private var initiated = false
 
@@ -106,14 +104,6 @@ class TrackerService : Service() {
                 )
             )
         }
-//        database.child("admin").get().addOnSuccessListener {
-//            val adminToken = it.value.toString()
-//            FirebaseMessaging.getInstance().send(
-//                RemoteMessage
-//                    .Builder(adminToken)
-//                    .build()
-//            )
-//        }
     }
 
     override fun onDestroy() {

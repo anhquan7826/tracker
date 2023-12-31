@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:tracker_admin/app/settings/settings.cubit.dart';
 import 'package:tracker_admin/app/settings/settings.state.dart';
 import 'package:tracker_admin/routes/routes.dart';
+import 'package:tracker_admin/utils/service.util.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -36,6 +37,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           }
         },
         child: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
             ListTile(
               leading: const Icon(Icons.notifications),
@@ -77,17 +79,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
               onTap: changeNotificationState,
             ),
-            ListTile(
-              leading: const Icon(
-                Icons.logout,
-                color: Colors.red,
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: ListTile(
+                leading: const Icon(
+                  Icons.logout,
+                  color: Colors.red,
+                ),
+                title: const Text('Đăng xuất'),
+                onTap: () {
+                  FirebaseAuth.instance.signOut().whenComplete(() {
+                    ServiceUtil.stopService();
+                    context.goNamed(routes.login);
+                  });
+                },
               ),
-              title: const Text('Đăng xuất'),
-              onTap: () {
-                FirebaseAuth.instance.signOut().whenComplete(() {
-                  context.goNamed(routes.login);
-                });
-              },
             ),
           ],
         ),
