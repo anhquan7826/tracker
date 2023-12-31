@@ -1,12 +1,12 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:go_router/go_router.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tracker_admin/app/home/home.cubit.dart';
 import 'package:tracker_admin/app/home/home.state.dart';
 import 'package:tracker_admin/routes/routes.dart';
+import 'package:tracker_admin/utils/service.util.dart';
 
 import '../../model/user.model.dart';
 
@@ -26,25 +26,16 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-
-    void onGetToken(String token) {
-      FirebaseDatabase.instance.ref('admin').set(token).whenComplete(() {
-        Fluttertoast.showToast(msg: 'Đã lưu FCM token cho thiết bị này!');
-      });
+    void permissionDeniedToast() {
+      Fluttertoast.showToast(msg: 'Vui lòng cấp quyền thông báo để nhận thông báo!');
     }
-
-    Future(() async {
-      FirebaseMessaging.instance.requestPermission(provisional: true).whenComplete(() {
-        FirebaseMessaging.instance.getToken().then((token) {
-          if (token != null) {
-            onGetToken(token);
-          }
-        });
-        FirebaseMessaging.instance.onTokenRefresh.listen((token) {
-          onGetToken(token);
-        });
-      });
-    });
+    Permission.notification.onDeniedCallback(() {
+      permissionDeniedToast();
+    }).onPermanentlyDeniedCallback(() {
+      permissionDeniedToast();
+    }).onGrantedCallback(() {
+      ServiceUtil.startService();
+    }).request();
   }
 
   @override
@@ -52,6 +43,11 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tất cả người dùng'),
+        actions: [
+          IconButton(onPressed: () {
+            context.pushNamed(routes.settings);
+          }, icon: const Icon(Icons.settings),),
+        ],
       ),
       body: BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {

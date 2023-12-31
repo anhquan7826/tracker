@@ -8,6 +8,8 @@ import 'package:tracker_admin/app/home/home.cubit.dart';
 import 'package:tracker_admin/app/home/home.view.dart';
 import 'package:tracker_admin/app/login/login.cubit.dart';
 import 'package:tracker_admin/app/login/login.view.dart';
+import 'package:tracker_admin/app/settings/settings.cubit.dart';
+import 'package:tracker_admin/app/settings/settings.view.dart';
 import 'package:tracker_admin/app/splash/splash.view.dart';
 import 'package:tracker_admin/model/device.model.dart';
 import 'package:tracker_admin/model/user.model.dart';
@@ -18,6 +20,7 @@ const routes = (
   users: 'users',
   devices: 'devices',
   history: 'history',
+  settings: 'settings',
 );
 
 final routerConfig = GoRouter(
@@ -41,39 +44,50 @@ final routerConfig = GoRouter(
       },
     ),
     GoRoute(
-        name: routes.users,
-        path: '/users',
-        builder: (context, state) {
-          return BlocProvider<HomeCubit>(
-            create: (context) => HomeCubit(),
-            child: const HomeScreen(),
-          );
-        },
-        routes: [
-          GoRoute(
-            name: routes.devices,
-            path: ':uid/devices',
-            builder: (context, state) {
-              final user = state.extra as TrackedUser;
-              return BlocProvider<DeviceCubit>(
-                create: (context) => DeviceCubit(state.pathParameters['uid'].toString()),
-                child: DeviceScreen(user: user),
-              );
-            },
-            routes: [
-              GoRoute(
-                  name: routes.history,
-                  path: ':deviceId/history',
-                  builder: (context, state) {
-                    final uid = state.pathParameters['uid'].toString();
-                    final deviceId = state.pathParameters['deviceId'].toString();
-                    return BlocProvider<HistoryCubit>(
-                      create: (context) => HistoryCubit(uid: uid, deviceId: deviceId),
-                      child: HistoryScreen(device: state.extra as TrackedDevice),
-                    );
-                  }),
-            ],
-          ),
-        ]),
+      name: routes.users,
+      path: '/users',
+      builder: (context, state) {
+        return BlocProvider<HomeCubit>(
+          create: (context) => HomeCubit(),
+          child: const HomeScreen(),
+        );
+      },
+      routes: [
+        GoRoute(
+          name: routes.devices,
+          path: ':uid/devices',
+          builder: (context, state) {
+            final user = state.extra as TrackedUser;
+            return BlocProvider<DeviceCubit>(
+              create: (context) => DeviceCubit(state.pathParameters['uid'].toString()),
+              child: DeviceScreen(user: user),
+            );
+          },
+          routes: [
+            GoRoute(
+                name: routes.history,
+                path: ':deviceId/history',
+                builder: (context, state) {
+                  final uid = state.pathParameters['uid'].toString();
+                  final deviceId = state.pathParameters['deviceId'].toString();
+                  return BlocProvider<HistoryCubit>(
+                    create: (context) => HistoryCubit(uid: uid, deviceId: deviceId),
+                    child: HistoryScreen(device: state.extra as TrackedDevice),
+                  );
+                }),
+          ],
+        ),
+      ],
+    ),
+    GoRoute(
+      name: routes.settings,
+      path: '/settings',
+      builder: (context, state) {
+        return BlocProvider<SettingsCubit>(
+          create: (context) => SettingsCubit(),
+          child: const SettingsScreen(),
+        );
+      },
+    ),
   ],
 );
